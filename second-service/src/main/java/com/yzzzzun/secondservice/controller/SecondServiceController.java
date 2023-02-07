@@ -18,4 +18,9 @@ public class SecondServiceController {
 	public String message(@RequestHeader("second-request") String header){
 		return header;
 	}
+
+	@GetMapping("/check")
+	public String check(){
+		return "Hi, second service";
+	}
 }
