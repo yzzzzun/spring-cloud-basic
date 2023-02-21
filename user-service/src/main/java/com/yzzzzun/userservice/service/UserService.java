@@ -46,8 +46,9 @@ public class UserService {
 
 		UserEntity userEntity = userRepository.findByUserId(userId);
 
-		if (userEntity == null)
+		if (userEntity == null) {
 			throw new UsernameNotFoundException("User not found");
+		}
 
 		UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 		List<ResponseOrder> ordersList = new ArrayList<>();
