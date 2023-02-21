@@ -1,17 +1,22 @@
 package com.yzzzzun.userservice.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yzzzzun.userservice.domain.dto.UserDto;
+import com.yzzzzun.userservice.domain.entity.UserEntity;
 import com.yzzzzun.userservice.domain.vo.Greeting;
 import com.yzzzzun.userservice.domain.vo.RequestUser;
 import com.yzzzzun.userservice.domain.vo.ResponseUser;
@@ -53,12 +58,21 @@ public class UserController {
 	}
 
 	@GetMapping("/users")
-	public void getUsers() {
+	public ResponseEntity<List<ResponseUser>> getUsers() {
+		Iterable<UserEntity> userList = userService.getUserByAll();
 
+		List<ResponseUser> result = new ArrayList<>();
+		userList.forEach(userEntity -> result.add(new ModelMapper().map(userEntity, ResponseUser.class)));
+
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
 	@GetMapping("/users/{userID}")
-	public void getUser() {
+	public ResponseEntity<ResponseUser> getUser(@PathVariable("userID") String userID) {
+		UserDto userDto = userService.getUserByUserId(userID);
 
+		ResponseUser returnValue = new ModelMapper().map(userDto, ResponseUser.class);
+
+		return ResponseEntity.status(HttpStatus.OK).body(returnValue);
 	}
 }
